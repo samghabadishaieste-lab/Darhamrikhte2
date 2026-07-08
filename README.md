@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -242,8 +242,8 @@
         </div>
 
         <div class="options" id="optionsContainer">
-            <button class="option-btn" id="option1">مناسب</button>
-            <button class="option-btn" id="option2">نابسام</button>
+            <button class="option-btn" id="option1">گزینه ۱</button>
+            <button class="option-btn" id="option2">گزینه ۲</button>
         </div>
 
         <div class="info-panel">
@@ -266,7 +266,7 @@
 </div>
 <script>
     (function() {
-        // ۲۰ کلمه آسان پایه دوم - با حروف درهم جدا شده
+        // ۲۰ کلمه آسان پایه دوم - بدون کلمات دو و سه حرفی
         const wordBank = [
             { correct: "مدرسه", scrambled: "م د ر س ه" },
             { correct: "کتاب", scrambled: "ت ا ب ک" },
@@ -284,30 +284,42 @@
             { correct: "درخت", scrambled: "د ر خ ت" },
             { correct: "کفش", scrambled: "ف ش ک" },
             { correct: "لباس", scrambled: "ل ب ا س" },
-            { correct: "نان", scrambled: "ن ا ن" },
-            { correct: "خانه", scrambled: "خ ا ن ه" },
-            { correct: "گربه", scrambled: "گ ر ب ه" },
-            { correct: "سگ", scrambled: "گ س" }
+            // کلمات جدید (جایگزین نان، سگ و ...)
+            { correct: "معلم", scrambled: "م ع ل م" },
+            { correct: "کلاس", scrambled: "ک ل ا س" },
+            { correct: "دفتر", scrambled: "د ف ت ر" },
+            { correct: "مادر", scrambled: "م ا د ر" },
+            { correct: "پدر", scrambled: "پ د ر" },
+            { correct: "گنجشک", scrambled: "گ ن ج ش ک" },
+            { correct: "باران", scrambled: "ب ا ر ا ن" },
+            { correct: "باغبان", scrambled: "ب ا غ ب ا ن" }
         ];
 
-        // تولید دو گزینه نادرست (متفاوت از کلمه درست)
-        function getWrongOptions(correctWord) {
-            const pool = wordBank.map(item => item.correct).filter(w => w !== correctWord);
-            // شافل کردن
-            for (let i = pool.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [pool[i], pool[j]] = [pool[j], pool[i]];
+        // حذف کلمات تکراری و اطمینان از ۲۰ کلمه منحصربفرد
+        const uniqueWords = [];
+        const seen = new Set();
+        for (const item of wordBank) {
+            if (!seen.has(item.correct)) {
+                seen.add(item.correct);
+                uniqueWords.push(item);
             }
-            const wrongs = [];
-            for (let i = 0; i < pool.length && wrongs.length < 2; i++) {
-                if (!wrongs.includes(pool[i])) wrongs.push(pool[i]);
+        }
+        // اگر کمتر از ۲۰ کلمه بود، از کلمات موجود پر می‌کنیم
+        while (uniqueWords.length < 20) {
+            const randomItem = wordBank[Math.floor(Math.random() * wordBank.length)];
+            if (!seen.has(randomItem.correct)) {
+                seen.add(randomItem.correct);
+                uniqueWords.push({...randomItem});
             }
-            // اگر کمتر از دو تا بود، پر کن
-            while (wrongs.length < 2) {
-                const fallback = "چیزی";
-                if (!wrongs.includes(fallback) && fallback !== correctWord) wrongs.push(fallback);
-            }
-            return wrongs;
+        }
+        // فقط ۲۰ کلمه اول رو نگه میداریم
+        const finalWordBank = uniqueWords.slice(0, 20);
+
+        // تولید یک گزینه نادرست (متفاوت از کلمه درست)
+        function getWrongOption(correctWord) {
+            const pool = finalWordBank.map(item => item.correct).filter(w => w !== correctWord);
+            const randomIndex = Math.floor(Math.random() * pool.length);
+            return pool[randomIndex] || "چیزی";
         }
 
         // عناصر DOM
@@ -351,20 +363,21 @@
             const q = questions[index];
             scrambledDisplay.textContent = q.scrambled;
 
-            // گرفتن گزینه‌های نادرست (متفاوت)
-            const wrongs = getWrongOptions(q.correct);
-            let options = [q.correct, ...wrongs];
-            // شافل کردن گزینه‌ها
+            // تولید یک گزینه نادرست
+            const wrong = getWrongOption(q.correct);
+            
+            // ساخت دو گزینه: یکی درست، یکی نادرست
+            let options = [q.correct, wrong];
+            // شافل کردن گزینه‌ها (تصادفی کردن ترتیب)
             for (let i = options.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [options[i], options[j]] = [options[j], options[i]];
             }
-            // اطمینان از اینکه گزینه درست حتماً در گزینه‌ها هست
-            if (!options.includes(q.correct)) {
-                options[0] = q.correct;
-            }
+            
+            // تنظیم متن دکمه‌ها
             option1.textContent = options[0];
             option2.textContent = options[1];
+            
             // حذف کلاس‌های اضافی
             option1.classList.remove('correct-glow', 'wrong-glow', 'disabled-btn');
             option2.classList.remove('correct-glow', 'wrong-glow', 'disabled-btn');
@@ -436,7 +449,7 @@
 
         function initGame() {
             // ساخت سوالات با درهم‌سازی جدید
-            questions = wordBank.map(item => ({
+            questions = finalWordBank.map(item => ({
                 correct: item.correct,
                 scrambled: shuffleScrambled(item.scrambled)
             }));
