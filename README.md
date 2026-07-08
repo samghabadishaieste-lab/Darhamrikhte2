@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بازی کلمات درهم ریخته 🎈</title>
-    <!-- Font & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            font-family: 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
             background: linear-gradient(145deg, #f9e3b3, #ffe5b4);
             min-height: 100vh;
             display: flex;
@@ -24,17 +19,15 @@
         .game-container {
             max-width: 700px;
             width: 100%;
-            background: rgba(255, 242, 204, 0.8);
+            background: rgba(255, 242, 204, 0.85);
             backdrop-filter: blur(2px);
             border-radius: 80px 80px 40px 40px;
             padding: 30px 25px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2), 0 0 0 4px #ffd966, 0 0 0 8px #ffb347;
             border: 2px solid #ffffff88;
-            transition: 0.3s;
             position: relative;
             overflow: hidden;
         }
-        /* عروسک‌های متحرک (ایموجی‌های شناور) */
         .floating-toys {
             position: absolute;
             top: 0;
@@ -62,11 +55,7 @@
             0% { transform: translateY(0px) rotate(0deg); }
             100% { transform: translateY(-40px) rotate(8deg); }
         }
-        /* محتوای اصلی (روی عروسک‌ها) */
-        .content {
-            position: relative;
-            z-index: 10;
-        }
+        .content { position: relative; z-index: 10; }
         .header {
             display: flex;
             flex-wrap: wrap;
@@ -116,7 +105,7 @@
         }
         .student-name input::placeholder {
             color: #5f471a;
-            opacity: 0.6;
+            opacity: 0.7;
         }
         .question-box {
             background: #fffaec;
@@ -164,22 +153,9 @@
             min-width: 140px;
             letter-spacing: 2px;
         }
-        .option-btn:active {
-            transform: translateY(6px);
-            box-shadow: 0 2px 0 #b67d2e;
-        }
-        .option-btn.correct-glow {
-            background: #8bc34a;
-            box-shadow: 0 0 20px #a3d86a;
-            border-color: #4caf50;
-            color: #1d3d0b;
-        }
-        .option-btn.wrong-glow {
-            background: #e57373;
-            box-shadow: 0 0 20px #f28b82;
-            border-color: #c62828;
-            color: #4a0e0e;
-        }
+        .option-btn:active { transform: translateY(6px); box-shadow: 0 2px 0 #b67d2e; }
+        .option-btn.correct-glow { background: #8bc34a; box-shadow: 0 0 20px #a3d86a; border-color: #4caf50; color: #1d3d0b; }
+        .option-btn.wrong-glow { background: #e57373; box-shadow: 0 0 20px #f28b82; border-color: #c62828; color: #4a0e0e; }
         .info-panel {
             display: flex;
             justify-content: space-between;
@@ -211,11 +187,7 @@
             transition: 0.06s linear;
             border: 1px solid #ffbb77;
         }
-        .reset-btn:active {
-            transform: translateY(5px);
-            box-shadow: 0 1px 0 #a55327;
-        }
-        /* کارنامه و تشویق */
+        .reset-btn:active { transform: translateY(5px); box-shadow: 0 1px 0 #a55327; }
         .result-card {
             background: #ffecbb;
             border-radius: 70px;
@@ -226,22 +198,10 @@
             box-shadow: 0 10px 0 #b87d2b;
             display: none;
         }
-        .result-card.show {
-            display: block;
-            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .result-card h2 {
-            font-size: 2.4rem;
-            color: #412f0e;
-        }
-        .result-card .emoji-big {
-            font-size: 4.5rem;
-            line-height: 1.4;
-        }
+        .result-card.show { display: block; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .result-card h2 { font-size: 2.4rem; color: #412f0e; }
+        .result-card .emoji-big { font-size: 4.5rem; line-height: 1.4; }
         .result-card .report {
             background: #fef7d7;
             border-radius: 40px;
@@ -249,21 +209,9 @@
             margin: 15px 0;
             border: 2px solid #dba158;
         }
-        .celebration {
-            font-size: 2rem;
-            animation: bounce 0.8s infinite alternate;
-        }
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-12px); }
-        }
-        /* حالت غیرفعال دکمه‌ها */
-        .option-btn.disabled-btn {
-            opacity: 0.6;
-            filter: grayscale(0.4);
-            pointer-events: none;
-        }
-        /* responsive */
+        .celebration { font-size: 2rem; animation: bounce 0.8s infinite alternate; }
+        @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-12px); } }
+        .option-btn.disabled-btn { opacity: 0.6; filter: grayscale(0.4); pointer-events: none; }
         @media (max-width: 550px) {
             .scrambled-word { font-size: 2.5rem; letter-spacing: 12px; padding: 12px 20px; }
             .option-btn { font-size: 1.5rem; padding: 14px 20px; min-width: 110px; }
@@ -273,26 +221,19 @@
 </head>
 <body>
 <div class="game-container">
-    <!-- عروسک‌های متحرک شاد -->
     <div class="floating-toys">
-        <span class="toy">🧸</span>
-        <span class="toy">🐼</span>
-        <span class="toy">🐨</span>
-        <span class="toy">🦊</span>
-        <span class="toy">🐥</span>
-        <span class="toy">🐻‍❄️</span>
+        <span class="toy">🧸</span><span class="toy">🐼</span><span class="toy">🐨</span>
+        <span class="toy">🦊</span><span class="toy">🐥</span><span class="toy">🐻‍❄️</span>
     </div>
 
     <div class="content">
-        <!-- هدر: نام آموزگار و دانش‌آموز -->
         <div class="header">
             <div class="teacher-name"><i class="fas fa-chalkboard-teacher"></i> آموزگار: شایسته صفی</div>
             <div class="student-name"><i class="fas fa-user-graduate"></i> 
-                <input type="text" id="studentNameInput" placeholder="نام دانش‌آموز" value="سارا">
+                <input type="text" id="studentNameInput" placeholder="نام دانش‌آموز" value="">
             </div>
         </div>
 
-        <!-- سوال و کلمه درهم ریخته -->
         <div class="question-box">
             <div class="scrambled-word" id="scrambledDisplay">ا ن ب س م</div>
             <div style="margin-top: 12px; font-size: 1.2rem; color: #5d3b14;">
@@ -300,20 +241,17 @@
             </div>
         </div>
 
-        <!-- دو گزینه -->
         <div class="options" id="optionsContainer">
             <button class="option-btn" id="option1">مناسب</button>
             <button class="option-btn" id="option2">نابسام</button>
         </div>
 
-        <!-- اطلاعات و دکمه‌ها -->
         <div class="info-panel">
             <span class="score" id="scoreDisplay">🌟 0</span>
             <span class="question-counter" id="questionCounter">📌 1 / 20</span>
             <button class="reset-btn" id="resetGameBtn"><i class="fas fa-undo-alt"></i> بازی نو</button>
         </div>
 
-        <!-- کارنامه + تشویق -->
         <div class="result-card" id="resultCard">
             <div class="emoji-big">🎉🎊🏆</div>
             <h2 id="resultTitle">آفرین! عالی بود!</h2>
@@ -328,7 +266,7 @@
 </div>
 <script>
     (function() {
-        // ۲۰ کلمه آسان پایه دوم + حروف درهم (جداشده با فاصله)
+        // ۲۰ کلمه آسان پایه دوم - با حروف درهم جدا شده
         const wordBank = [
             { correct: "مدرسه", scrambled: "م د ر س ه" },
             { correct: "کتاب", scrambled: "ت ا ب ک" },
@@ -352,19 +290,19 @@
             { correct: "سگ", scrambled: "گ س" }
         ];
 
-        // گزینه‌های نادرست (تولید پویا)
-        function generateWrongOptions(correctWord) {
-            // برای هر کلمه، دو گزینه نادرست متفاوت می‌سازیم (بر اساس حروف)
-            const pool = ["مدرسه", "کتاب", "مداد", "نوشته", "بازی", "خورشید", "گلستان", "پروانه", "شکلات", "دوست", "ماهی", "آسمان", "چراغ", "درخت", "کفش", "لباس", "نان", "خانه", "گربه", "سگ"];
-            const wrongs = [];
-            const shuffled = [...pool].filter(w => w !== correctWord);
-            for (let i = 0; i < shuffled.length; i++) {
-                const rand = Math.floor(Math.random() * shuffled.length);
-                if (!wrongs.includes(shuffled[rand]) && shuffled[rand] !== correctWord) {
-                    wrongs.push(shuffled[rand]);
-                }
-                if (wrongs.length === 2) break;
+        // تولید دو گزینه نادرست (متفاوت از کلمه درست)
+        function getWrongOptions(correctWord) {
+            const pool = wordBank.map(item => item.correct).filter(w => w !== correctWord);
+            // شافل کردن
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
             }
+            const wrongs = [];
+            for (let i = 0; i < pool.length && wrongs.length < 2; i++) {
+                if (!wrongs.includes(pool[i])) wrongs.push(pool[i]);
+            }
+            // اگر کمتر از دو تا بود، پر کن
             while (wrongs.length < 2) {
                 const fallback = "چیزی";
                 if (!wrongs.includes(fallback) && fallback !== correctWord) wrongs.push(fallback);
@@ -383,23 +321,19 @@
         const resultMessage = document.getElementById('resultMessage');
         const resultTitle = document.getElementById('resultTitle');
         const celebrationEmoji = document.getElementById('celebrationEmoji');
-
         const studentInput = document.getElementById('studentNameInput');
         const resetBtn = document.getElementById('resetGameBtn');
         const playAgainBtn = document.getElementById('playAgainBtn');
 
-        // متغیرهای وضعیت
         let questions = [];
         let currentIndex = 0;
         let score = 0;
         let gameOver = false;
         let isAnswered = false;
 
-        // تابع shuffle (برای نمایش درهم)
+        // شافل کردن حروف درهم (برای تنوع بیشتر)
         function shuffleScrambled(scrambledStr) {
-            // scrambledStr مثل "م د ر س ه"
             let letters = scrambledStr.split(' ');
-            // اگر یک حرف بیشتر نباشه
             for (let i = letters.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [letters[i], letters[j]] = [letters[j], letters[i]];
@@ -407,7 +341,6 @@
             return letters.join(' ');
         }
 
-        // بارگذاری سوال
         function loadQuestion(index) {
             if (gameOver) return;
             if (index >= questions.length) {
@@ -416,27 +349,28 @@
             }
             isAnswered = false;
             const q = questions[index];
-            // نمایش درهم‌ریخته (با فاصله)
             scrambledDisplay.textContent = q.scrambled;
-            // دو گزینه: درست و نادرست (shuffle)
-            const correct = q.correct;
-            let wrongs = generateWrongOptions(correct);
-            // ترکیب گزینه‌ها به صورت تصادفی
-            let options = [correct, ...wrongs];
+
+            // گرفتن گزینه‌های نادرست (متفاوت)
+            const wrongs = getWrongOptions(q.correct);
+            let options = [q.correct, ...wrongs];
+            // شافل کردن گزینه‌ها
             for (let i = options.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [options[i], options[j]] = [options[j], options[i]];
+            }
+            // اطمینان از اینکه گزینه درست حتماً در گزینه‌ها هست
+            if (!options.includes(q.correct)) {
+                options[0] = q.correct;
             }
             option1.textContent = options[0];
             option2.textContent = options[1];
             // حذف کلاس‌های اضافی
             option1.classList.remove('correct-glow', 'wrong-glow', 'disabled-btn');
             option2.classList.remove('correct-glow', 'wrong-glow', 'disabled-btn');
-            // بروزرسانی شمارنده
             questionCounter.textContent = `📌 ${index+1} / ${questions.length}`;
         }
 
-        // پایان بازی و کارنامه
         function endGame() {
             gameOver = true;
             const studentName = studentInput.value.trim() || 'دانش‌آموز';
@@ -465,12 +399,10 @@
             finalScoreText.textContent = `${score} از ${total}`;
             celebrationEmoji.textContent = emoji;
             resultCard.classList.add('show');
-            // غیرفعال کردن دکمه‌های گزینه
             option1.classList.add('disabled-btn');
             option2.classList.add('disabled-btn');
         }
 
-        // بررسی پاسخ
         function checkAnswer(selectedText) {
             if (gameOver || isAnswered) return;
             const currentQ = questions[currentIndex];
@@ -478,35 +410,21 @@
             if (isCorrect) {
                 score++;
                 scoreDisplay.textContent = `🌟 ${score}`;
-                // جلوه درست
-                if (option1.textContent === selectedText) {
-                    option1.classList.add('correct-glow');
-                } else {
-                    option2.classList.add('correct-glow');
-                }
-                // تشویق لحظه‌ای
+                if (option1.textContent === selectedText) option1.classList.add('correct-glow');
+                else option2.classList.add('correct-glow');
             } else {
-                // اشتباه
-                if (option1.textContent === selectedText) {
-                    option1.classList.add('wrong-glow');
-                } else {
-                    option2.classList.add('wrong-glow');
-                }
+                if (option1.textContent === selectedText) option1.classList.add('wrong-glow');
+                else option2.classList.add('wrong-glow');
                 // نمایش پاسخ درست
-                if (option1.textContent === currentQ.correct) {
-                    option1.classList.add('correct-glow');
-                } else if (option2.textContent === currentQ.correct) {
-                    option2.classList.add('correct-glow');
-                }
+                if (option1.textContent === currentQ.correct) option1.classList.add('correct-glow');
+                else if (option2.textContent === currentQ.correct) option2.classList.add('correct-glow');
             }
             isAnswered = true;
             option1.classList.add('disabled-btn');
             option2.classList.add('disabled-btn');
 
-            // بعد از 0.9 ثانیه سوال بعدی
             setTimeout(() => {
                 if (gameOver) return;
-                // اگر آخرین سوال بود پایان
                 if (currentIndex + 1 >= questions.length) {
                     endGame();
                 } else {
@@ -516,19 +434,17 @@
             }, 950);
         }
 
-        // شروع یا ریست بازی
         function initGame() {
-            // ساخت سوالات از بانک
+            // ساخت سوالات با درهم‌سازی جدید
             questions = wordBank.map(item => ({
                 correct: item.correct,
-                scrambled: shuffleScrambled(item.scrambled) // هر بار درهم جدید
+                scrambled: shuffleScrambled(item.scrambled)
             }));
-            // برای اطمینان shuffle مجدد
+            // شافل کردن ترتیب سوالات
             for (let i = questions.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [questions[i], questions[j]] = [questions[j], questions[i]];
             }
-            // ریست متغیرها
             currentIndex = 0;
             score = 0;
             gameOver = false;
@@ -548,22 +464,17 @@
             if (!gameOver && !isAnswered) checkAnswer(this.textContent);
         });
 
-        resetBtn.addEventListener('click', function() {
-            initGame();
-        });
-        playAgainBtn.addEventListener('click', function() {
-            initGame();
-        });
+        resetBtn.addEventListener('click', initGame);
+        playAgainBtn.addEventListener('click', initGame);
 
         // مقداردهی اولیه
         initGame();
 
-        // آهنگ شاد کودکانه (با Web Audio API - نت‌های ساده)
+        // آهنگ شاد کودکانه (Web Audio API)
         (function playHappyTune() {
             try {
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
                 const ctx = new AudioCtx();
-                // نت‌های ساده شاد (do re mi ...)
                 const notes = [523, 587, 659, 698, 784, 880, 988, 1047];
                 let index = 0;
                 function playNote() {
@@ -580,13 +491,10 @@
                     osc.stop(ctx.currentTime + 0.25);
                     index++;
                 }
-                // پلی هر 0.7 ثانیه - حالت لوپ
                 setInterval(playNote, 700);
-                // کمی تاخیر شروع
                 setTimeout(playNote, 200);
-            } catch (e) { /* fallback: بدون صدا */ }
+            } catch (e) { /* fallback */ }
         })();
-
     })();
 </script>
 </body>
