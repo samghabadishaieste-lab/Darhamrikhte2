@@ -1,514 +1,229 @@
-
+from pathlib import Path
+html = r'''<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی کلمات درهم ریخته 🎈</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
-            background: linear-gradient(145deg, #f9e3b3, #ffe5b4);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .game-container {
-            max-width: 700px;
-            width: 100%;
-            background: rgba(255, 242, 204, 0.85);
-            backdrop-filter: blur(2px);
-            border-radius: 80px 80px 40px 40px;
-            padding: 30px 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2), 0 0 0 4px #ffd966, 0 0 0 8px #ffb347;
-            border: 2px solid #ffffff88;
-            position: relative;
-            overflow: hidden;
-        }
-        .floating-toys {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .toy {
-            position: absolute;
-            font-size: 2.8rem;
-            animation: floatToy 8s infinite alternate ease-in-out;
-            opacity: 0.6;
-            text-shadow: 0 8px 15px rgba(0,0,0,0.1);
-        }
-        .toy:nth-child(1) { top: 8%; left: 5%; animation-duration: 11s; }
-        .toy:nth-child(2) { top: 70%; left: 85%; animation-duration: 9s; animation-delay: 1s; }
-        .toy:nth-child(3) { top: 40%; left: 88%; animation-duration: 12s; animation-delay: 2s; }
-        .toy:nth-child(4) { top: 85%; left: 10%; animation-duration: 10s; animation-delay: 0.5s; }
-        .toy:nth-child(5) { top: 15%; left: 80%; animation-duration: 14s; animation-delay: 1.8s; }
-        .toy:nth-child(6) { top: 55%; left: 2%; animation-duration: 13s; animation-delay: 3s; }
-        @keyframes floatToy {
-            0% { transform: translateY(0px) rotate(0deg); }
-            100% { transform: translateY(-40px) rotate(8deg); }
-        }
-        .content { position: relative; z-index: 10; }
-        .header {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            background: #fce8b2;
-            padding: 12px 20px;
-            border-radius: 60px;
-            border: 2px solid #f7b731;
-            box-shadow: inset 0 -4px 0 #d49b2a;
-            margin-bottom: 25px;
-        }
-        .teacher-name {
-            background: #ffb347;
-            padding: 6px 20px;
-            border-radius: 50px;
-            color: #2d1f0c;
-            font-weight: bold;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 0 #b16f1a;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .student-name {
-            background: #ffd966;
-            padding: 6px 18px;
-            border-radius: 50px;
-            font-weight: bold;
-            color: #2d1f0c;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 0 #b68f3a;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .student-name input {
-            border: none;
-            background: transparent;
-            font-weight: bold;
-            font-size: 1rem;
-            width: 110px;
-            border-bottom: 2px dashed #7a5a1a;
-            color: #2d1f0c;
-            outline: none;
-            padding: 0 5px;
-        }
-        .student-name input::placeholder {
-            color: #5f471a;
-            opacity: 0.7;
-        }
-        .question-box {
-            background: #fffaec;
-            border-radius: 100px;
-            padding: 25px 10px;
-            margin: 20px 0 25px;
-            text-align: center;
-            border: 3px solid #ff9f1c;
-            box-shadow: 0 8px 0 #b86f1a, inset 0 -4px 0 #f0c27a;
-        }
-        .scrambled-word {
-            font-size: 3.2rem;
-            font-weight: 800;
-            letter-spacing: 18px;
-            color: #3d2b0e;
-            text-shadow: 3px 3px 0 #fddc8b;
-            word-break: keep-all;
-            padding: 10px 0;
-            background: #fff2d1;
-            border-radius: 60px;
-            display: inline-block;
-            padding: 15px 40px;
-            box-shadow: inset 0 -6px 0 #dba35a;
-            margin-bottom: 8px;
-        }
-        .options {
-            display: flex;
-            justify-content: center;
-            gap: 35px;
-            margin: 25px 0 15px;
-            flex-wrap: wrap;
-        }
-        .option-btn {
-            background: #fce692;
-            border: none;
-            padding: 16px 40px;
-            border-radius: 80px;
-            font-size: 1.9rem;
-            font-weight: bold;
-            color: #2c1c06;
-            box-shadow: 0 8px 0 #b67d2e, 0 5px 15px rgba(0,0,0,0.2);
-            cursor: pointer;
-            transition: 0.07s linear;
-            border: 2px solid #ffe09c;
-            min-width: 140px;
-            letter-spacing: 2px;
-        }
-        .option-btn:active { transform: translateY(6px); box-shadow: 0 2px 0 #b67d2e; }
-        .option-btn.correct-glow { background: #8bc34a; box-shadow: 0 0 20px #a3d86a; border-color: #4caf50; color: #1d3d0b; }
-        .option-btn.wrong-glow { background: #e57373; box-shadow: 0 0 20px #f28b82; border-color: #c62828; color: #4a0e0e; }
-        .info-panel {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #fde7b0;
-            padding: 10px 25px;
-            border-radius: 50px;
-            margin: 20px 0 10px;
-            border: 2px solid #efb153;
-        }
-        .score, .question-counter {
-            font-weight: bold;
-            font-size: 1.2rem;
-            background: #fecb6e;
-            padding: 6px 20px;
-            border-radius: 40px;
-            box-shadow: inset 0 -3px 0 #b57d2c;
-        }
-        .reset-btn {
-            background: #ff8a5c;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 40px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 5px 0 #a55327;
-            color: #1f1305;
-            cursor: pointer;
-            transition: 0.06s linear;
-            border: 1px solid #ffbb77;
-        }
-        .reset-btn:active { transform: translateY(5px); box-shadow: 0 1px 0 #a55327; }
-        .result-card {
-            background: #ffecbb;
-            border-radius: 70px;
-            padding: 25px 15px;
-            margin-top: 20px;
-            border: 4px solid #fcb045;
-            text-align: center;
-            box-shadow: 0 10px 0 #b87d2b;
-            display: none;
-        }
-        .result-card.show { display: block; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .result-card h2 { font-size: 2.4rem; color: #412f0e; }
-        .result-card .emoji-big { font-size: 4.5rem; line-height: 1.4; }
-        .result-card .report {
-            background: #fef7d7;
-            border-radius: 40px;
-            padding: 20px;
-            margin: 15px 0;
-            border: 2px solid #dba158;
-        }
-        .celebration { font-size: 2rem; animation: bounce 0.8s infinite alternate; }
-        @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-12px); } }
-        .option-btn.disabled-btn { opacity: 0.6; filter: grayscale(0.4); pointer-events: none; }
-        @media (max-width: 550px) {
-            .scrambled-word { font-size: 2.5rem; letter-spacing: 12px; padding: 12px 20px; }
-            .option-btn { font-size: 1.5rem; padding: 14px 20px; min-width: 110px; }
-            .header { flex-direction: column; gap: 10px; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>بازی کلمات درهم‌ریخته - پایه دوم</title>
+  <style>
+    :root{
+      --bg1:#ffefb0; --bg2:#ffd6e7; --bg3:#c8f7ff; --card:#ffffffee;
+      --primary:#ff5fa2; --secondary:#6c63ff; --success:#2ecc71; --danger:#ff4d4d;
+      --text:#233; --shadow:0 10px 30px rgba(0,0,0,.12);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Tahoma, Arial, sans-serif; color:var(--text);
+      background: linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+      min-height:100vh; overflow-x:hidden;
+    }
+    .bg-hearts::before, .bg-hearts::after{
+      content:""; position:fixed; inset:auto; pointer-events:none; opacity:.18;
+      width:180px; height:180px; border-radius:50%; filter: blur(14px);
+      background: radial-gradient(circle at 30% 30%, #fff 0 12%, transparent 13%),
+                  radial-gradient(circle at 70% 25%, #fff 0 10%, transparent 11%),
+                  radial-gradient(circle at 50% 70%, #fff 0 18%, transparent 19%);
+      animation: float 8s ease-in-out infinite;
+      z-index:0;
+    }
+    .bg-hearts::before{top:10px; left:10px}
+    .bg-hearts::after{bottom:10px; right:10px; animation-delay:2s}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+    .container{position:relative; z-index:1; max-width:980px; margin:0 auto; padding:20px}
+    .card{
+      background:var(--card); backdrop-filter: blur(8px);
+      border-radius:28px; box-shadow:var(--shadow); padding:22px; margin:16px 0;
+      border:3px solid rgba(255,255,255,.7);
+    }
+    h1{margin:0 0 10px; color:#ff2f7d; font-size:clamp(26px,4vw,40px)}
+    h2,h3{margin:10px 0}
+    .teacher{font-size:1.1rem; background:#fff3; padding:10px 14px; border-radius:18px; display:inline-block}
+    .row{display:grid; grid-template-columns:1fr; gap:14px}
+    .input, select, button{
+      width:100%; border:none; border-radius:18px; padding:14px 16px; font-size:1rem;
+      outline:none;
+    }
+    .input, select{background:#fff; box-shadow: inset 0 0 0 2px rgba(0,0,0,.05)}
+    button{cursor:pointer; font-weight:700; transition:.2s; background:linear-gradient(135deg,var(--secondary),var(--primary)); color:#fff}
+    button:hover{transform:translateY(-2px); filter:brightness(1.05)}
+    button.secondary{background:linear-gradient(135deg,#00c2ff,#38d39f)}
+    .hidden{display:none}
+    .game-top{display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; align-items:center}
+    .badge{background:#fff; padding:10px 14px; border-radius:999px; box-shadow:var(--shadow); font-weight:700}
+    .word-box{
+      background:linear-gradient(135deg,#fff,#fff7fd); border-radius:24px; padding:20px; text-align:center;
+      border:3px dashed #ff9ac2; margin-top:10px;
+    }
+    .scramble{font-size:clamp(24px,4vw,38px); letter-spacing:.22em; word-spacing:.22em; font-weight:700; color:#4a2d73}
+    .options{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:16px}
+    .opt{background:#fff; color:#333; border:2px solid #ffd0e3}
+    .opt.correct{background:#dbffe9; border-color:#35c26b}
+    .opt.wrong{background:#ffe1e1; border-color:#ff6b6b}
+    .feedback{font-size:1.1rem; font-weight:700; min-height:34px; margin-top:10px}
+    .progress-wrap{background:#fff; border-radius:999px; height:18px; overflow:hidden; box-shadow:inset 0 0 0 2px rgba(0,0,0,.05)}
+    .progress{height:100%; width:0%; background:linear-gradient(90deg,#ff7eb3,#7afcff,#feff9c); transition:width .35s}
+    .profile{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
+    .small{font-size:.95rem; opacity:.9}
+    .emoji-band{font-size:2rem; animation: bounce 1.6s ease-in-out infinite; text-align:center}
+    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    audio{width:100%; margin-top:10px}
+    .footer{font-size:.9rem; opacity:.8; text-align:center; margin-top:10px}
+    @media (max-width:640px){ .options, .profile{grid-template-columns:1fr} }
+  </style>
 </head>
-<body>
-<div class="game-container">
-    <div class="floating-toys">
-        <span class="toy">🧸</span><span class="toy">🐼</span><span class="toy">🐨</span>
-        <span class="toy">🦊</span><span class="toy">🐥</span><span class="toy">🐻‍❄️</span>
+<body class="bg-hearts">
+  <div class="container">
+    <div class="card" id="startCard">
+      <div class="emoji-band">🧸🎈🌈✨🦄🎉</div>
+      <h1>بازی کلمات درهم‌ریخته دو گزینه‌ای</h1>
+      <div class="teacher">نام آموزگار: <strong>شایسته صفی</strong></div>
+      <p class="small">سلام عزیزم! اول نام دانش‌آموز را بنویس تا بازی شروع شود.</p>
+      <div class="row">
+        <input id="studentName" class="input" type="text" placeholder="نام دانش‌آموز را وارد کن..." />
+        <button onclick="startGame()">شروع بازی</button>
+      </div>
     </div>
 
-    <div class="content">
-        <div class="header">
-            <div class="teacher-name"><i class="fas fa-chalkboard-teacher"></i> آموزگار: شایسته صفی</div>
-            <div class="student-name"><i class="fas fa-user-graduate"></i> 
-                <input type="text" id="studentNameInput" placeholder="نام دانش‌آموز" value="">
-            </div>
-        </div>
-
-        <div class="question-box">
-            <div class="scrambled-word" id="scrambledDisplay">ا ن ب س م</div>
-            <div style="margin-top: 12px; font-size: 1.2rem; color: #5d3b14;">
-                <i class="fas fa-puzzle-piece"></i> کدام گزینه درست است؟
-            </div>
-        </div>
-
-        <div class="options" id="optionsContainer">
-            <button class="option-btn" id="option1">گزینه ۱</button>
-            <button class="option-btn" id="option2">گزینه ۲</button>
-        </div>
-
-        <div class="info-panel">
-            <span class="score" id="scoreDisplay">🌟 0</span>
-            <span class="question-counter" id="questionCounter">📌 1 / 20</span>
-            <button class="reset-btn" id="resetGameBtn"><i class="fas fa-undo-alt"></i> بازی نو</button>
-        </div>
-
-        <div class="result-card" id="resultCard">
-            <div class="emoji-big">🎉🎊🏆</div>
-            <h2 id="resultTitle">آفرین! عالی بود!</h2>
-            <div class="report" id="reportCard">
-                <p id="resultMessage">تو کل کلمات رو درست گفتی!</p>
-                <p style="font-size: 1.2rem;"><span id="finalScoreText">0</span> از ۲۰</p>
-            </div>
-            <div class="celebration" id="celebrationEmoji">🥳🤩🎈</div>
-            <button class="reset-btn" style="margin-top: 12px; background: #f3b33d;" id="playAgainBtn">بازی دوباره 🎮</button>
-        </div>
+    <div class="card hidden" id="gameCard">
+      <div class="game-top">
+        <div class="badge">دانش‌آموز: <span id="showName"></span></div>
+        <div class="badge">سؤال <span id="qNum">1</span> از 20</div>
+        <div class="badge">امتیاز: <span id="score">0</span></div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+      </div>
+      <div class="word-box">
+        <div class="small">کلمه درهم‌ریخته:</div>
+        <div class="scramble" id="scramble"></div>
+        <div class="options" id="options"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:14px; flex-wrap:wrap">
+        <button class="secondary" onclick="nextQuestion()" id="nextBtn" disabled>سؤال بعدی</button>
+        <button onclick="restartGame()">شروع دوباره</button>
+      </div>
+      <audio controls loop autoplay>
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4f2d9d1e87.mp3?filename=happy-birthday-to-you-110645.mp3" type="audio/mpeg">
+        مرورگر شما از پخش صوت پشتیبانی نمی‌کند.
+      </audio>
+      <div class="footer">موسیقی شاد کودکانه بی‌کلام برای فضای بازی</div>
     </div>
-</div>
+
+    <div class="card hidden" id="resultCard">
+      <div class="emoji-band">🎉🏆🌟👏🎊</div>
+      <h2 id="resultTitle"></h2>
+      <div class="profile">
+        <div class="badge">امتیاز نهایی: <span id="finalScore"></span> / 20</div>
+        <div class="badge">درصد موفقیت: <span id="percent"></span>%</div>
+      </div>
+      <div class="card" style="margin-top:14px; background:#fff">
+        <h3>کارنامه</h3>
+        <p id="report"></p>
+      </div>
+      <div id="cheer" style="font-size:1.2rem; font-weight:700; color:#ff2f7d; text-align:center; margin:14px 0"></div>
+      <button onclick="restartGame()">بازی دوباره</button>
+    </div>
+  </div>
+
 <script>
-    (function() {
-        // ۲۰ کلمه آسان پایه دوم - بدون کلمات دو و سه حرفی
-        const wordBank = [
-            { correct: "مدرسه", scrambled: "م د ر س ه" },
-            { correct: "کتاب", scrambled: "ت ا ب ک" },
-            { correct: "مداد", scrambled: "د ا د م" },
-            { correct: "نوشته", scrambled: "ن و ش ت ه" },
-            { correct: "بازی", scrambled: "ی ز ا ب" },
-            { correct: "خورشید", scrambled: "خ و ر ش ی د" },
-            { correct: "گلستان", scrambled: "گ ل س ت ا ن" },
-            { correct: "پروانه", scrambled: "پ ر و ا ن ه" },
-            { correct: "شکلات", scrambled: "ش ک ل ا ت" },
-            { correct: "دوست", scrambled: "د و س ت" },
-            { correct: "ماهی", scrambled: "م ا ه ی" },
-            { correct: "آسمان", scrambled: "آ س م ا ن" },
-            { correct: "چراغ", scrambled: "چ ر ا غ" },
-            { correct: "درخت", scrambled: "د ر خ ت" },
-            { correct: "کفش", scrambled: "ف ش ک" },
-            { correct: "لباس", scrambled: "ل ب ا س" },
-            // کلمات جدید (جایگزین نان، سگ و ...)
-            { correct: "معلم", scrambled: "م ع ل م" },
-            { correct: "کلاس", scrambled: "ک ل ا س" },
-            { correct: "دفتر", scrambled: "د ف ت ر" },
-            { correct: "مادر", scrambled: "م ا د ر" },
-            { correct: "پدر", scrambled: "پ د ر" },
-            { correct: "گنجشک", scrambled: "گ ن ج ش ک" },
-            { correct: "باران", scrambled: "ب ا ر ا ن" },
-            { correct: "باغبان", scrambled: "ب ا غ ب ا ن" }
-        ];
-
-        // حذف کلمات تکراری و اطمینان از ۲۰ کلمه منحصربفرد
-        const uniqueWords = [];
-        const seen = new Set();
-        for (const item of wordBank) {
-            if (!seen.has(item.correct)) {
-                seen.add(item.correct);
-                uniqueWords.push(item);
-            }
-        }
-        // اگر کمتر از ۲۰ کلمه بود، از کلمات موجود پر می‌کنیم
-        while (uniqueWords.length < 20) {
-            const randomItem = wordBank[Math.floor(Math.random() * wordBank.length)];
-            if (!seen.has(randomItem.correct)) {
-                seen.add(randomItem.correct);
-                uniqueWords.push({...randomItem});
-            }
-        }
-        // فقط ۲۰ کلمه اول رو نگه میداریم
-        const finalWordBank = uniqueWords.slice(0, 20);
-
-        // تولید یک گزینه نادرست (متفاوت از کلمه درست)
-        function getWrongOption(correctWord) {
-            const pool = finalWordBank.map(item => item.correct).filter(w => w !== correctWord);
-            const randomIndex = Math.floor(Math.random() * pool.length);
-            return pool[randomIndex] || "چیزی";
-        }
-
-        // عناصر DOM
-        const scrambledDisplay = document.getElementById('scrambledDisplay');
-        const option1 = document.getElementById('option1');
-        const option2 = document.getElementById('option2');
-        const scoreDisplay = document.getElementById('scoreDisplay');
-        const questionCounter = document.getElementById('questionCounter');
-        const resultCard = document.getElementById('resultCard');
-        const finalScoreText = document.getElementById('finalScoreText');
-        const resultMessage = document.getElementById('resultMessage');
-        const resultTitle = document.getElementById('resultTitle');
-        const celebrationEmoji = document.getElementById('celebrationEmoji');
-        const studentInput = document.getElementById('studentNameInput');
-        const resetBtn = document.getElementById('resetGameBtn');
-        const playAgainBtn = document.getElementById('playAgainBtn');
-
-        let questions = [];
-        let currentIndex = 0;
-        let score = 0;
-        let gameOver = false;
-        let isAnswered = false;
-
-        // شافل کردن حروف درهم (برای تنوع بیشتر)
-        function shuffleScrambled(scrambledStr) {
-            let letters = scrambledStr.split(' ');
-            for (let i = letters.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [letters[i], letters[j]] = [letters[j], letters[i]];
-            }
-            return letters.join(' ');
-        }
-
-        function loadQuestion(index) {
-            if (gameOver) return;
-            if (index >= questions.length) {
-                endGame();
-                return;
-            }
-            isAnswered = false;
-            const q = questions[index];
-            scrambledDisplay.textContent = q.scrambled;
-
-            // تولید یک گزینه نادرست
-            const wrong = getWrongOption(q.correct);
-            
-            // ساخت دو گزینه: یکی درست، یکی نادرست
-            let options = [q.correct, wrong];
-            // شافل کردن گزینه‌ها (تصادفی کردن ترتیب)
-            for (let i = options.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [options[i], options[j]] = [options[j], options[i]];
-            }
-            
-            // تنظیم متن دکمه‌ها
-            option1.textContent = options[0];
-            option2.textContent = options[1];
-            
-            // حذف کلاس‌های اضافی
-            option1.classList.remove('correct-glow', 'wrong-glow', 'disabled-btn');
-            option2.classList.remove('correct-glow', 'wrong-glow', 'disabled-btn');
-            questionCounter.textContent = `📌 ${index+1} / ${questions.length}`;
-        }
-
-        function endGame() {
-            gameOver = true;
-            const studentName = studentInput.value.trim() || 'دانش‌آموز';
-            const total = questions.length;
-            const percent = Math.round((score / total) * 100);
-            let msg = '', title = '', emoji = '';
-            if (percent === 100) {
-                title = '🎊 عالی‌ترین! 🎊';
-                msg = `آفرین ${studentName}! همه رو درست گفتی! تو یک قهرمانی!`;
-                emoji = '🏆🎖️💥';
-            } else if (percent >= 80) {
-                title = '😍 خیلی خوب!';
-                msg = `${studentName} عزیز، خیلی خوب بود! فقط ${total - score} تا رو کم آوردی!`;
-                emoji = '🌟🎈✨';
-            } else if (percent >= 50) {
-                title = '👍 خوب بود!';
-                msg = `${studentName} جان، خوب بود! می‌تونی بهتر بشی!`;
-                emoji = '💪📚🌈';
-            } else {
-                title = '💪 تلاش کن!';
-                msg = `${studentName} عزیزم، تمرین بیشتر باعث میشه عالی شی! ناامید نشو!`;
-                emoji = '🌱🧸💖';
-            }
-            resultTitle.textContent = title;
-            resultMessage.textContent = msg;
-            finalScoreText.textContent = `${score} از ${total}`;
-            celebrationEmoji.textContent = emoji;
-            resultCard.classList.add('show');
-            option1.classList.add('disabled-btn');
-            option2.classList.add('disabled-btn');
-        }
-
-        function checkAnswer(selectedText) {
-            if (gameOver || isAnswered) return;
-            const currentQ = questions[currentIndex];
-            const isCorrect = (selectedText === currentQ.correct);
-            if (isCorrect) {
-                score++;
-                scoreDisplay.textContent = `🌟 ${score}`;
-                if (option1.textContent === selectedText) option1.classList.add('correct-glow');
-                else option2.classList.add('correct-glow');
-            } else {
-                if (option1.textContent === selectedText) option1.classList.add('wrong-glow');
-                else option2.classList.add('wrong-glow');
-                // نمایش پاسخ درست
-                if (option1.textContent === currentQ.correct) option1.classList.add('correct-glow');
-                else if (option2.textContent === currentQ.correct) option2.classList.add('correct-glow');
-            }
-            isAnswered = true;
-            option1.classList.add('disabled-btn');
-            option2.classList.add('disabled-btn');
-
-            setTimeout(() => {
-                if (gameOver) return;
-                if (currentIndex + 1 >= questions.length) {
-                    endGame();
-                } else {
-                    currentIndex++;
-                    loadQuestion(currentIndex);
-                }
-            }, 950);
-        }
-
-        function initGame() {
-            // ساخت سوالات با درهم‌سازی جدید
-            questions = finalWordBank.map(item => ({
-                correct: item.correct,
-                scrambled: shuffleScrambled(item.scrambled)
-            }));
-            // شافل کردن ترتیب سوالات
-            for (let i = questions.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [questions[i], questions[j]] = [questions[j], questions[i]];
-            }
-            currentIndex = 0;
-            score = 0;
-            gameOver = false;
-            isAnswered = false;
-            scoreDisplay.textContent = '🌟 0';
-            resultCard.classList.remove('show');
-            option1.classList.remove('disabled-btn', 'correct-glow', 'wrong-glow');
-            option2.classList.remove('disabled-btn', 'correct-glow', 'wrong-glow');
-            loadQuestion(0);
-        }
-
-        // رویدادها
-        option1.addEventListener('click', function() {
-            if (!gameOver && !isAnswered) checkAnswer(this.textContent);
-        });
-        option2.addEventListener('click', function() {
-            if (!gameOver && !isAnswered) checkAnswer(this.textContent);
-        });
-
-        resetBtn.addEventListener('click', initGame);
-        playAgainBtn.addEventListener('click', initGame);
-
-        // مقداردهی اولیه
-        initGame();
-
-        // آهنگ شاد کودکانه (Web Audio API)
-        (function playHappyTune() {
-            try {
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                const ctx = new AudioCtx();
-                const notes = [523, 587, 659, 698, 784, 880, 988, 1047];
-                let index = 0;
-                function playNote() {
-                    if (index >= notes.length) index = 0;
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.type = 'triangle';
-                    osc.frequency.value = notes[index] * 1.2;
-                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-                    osc.start(ctx.currentTime);
-                    osc.stop(ctx.currentTime + 0.25);
-                    index++;
-                }
-                setInterval(playNote, 700);
-                setTimeout(playNote, 200);
-            } catch (e) { /* fallback */ }
-        })();
-    })();
+const questions = [
+  {scramble:'م ا ن ب س', options:['مداد','بنام'], answer:'مداد'},
+  {scramble:'ک ا ت ب', options:['کتاب','کباب'], answer:'کتاب'},
+  {scramble:'س ی ب', options:['سیب','سبز'], answer:'سیب'},
+  {scramble:'گ ل', options:['گل','گاو'], answer:'گل'},
+  {scramble:'ب ا ر ا ن', options:['باران','بنا'], answer:'باران'},
+  {scramble:'م ا د ر', options:['مادر','مدرسه'], answer:'مادر'},
+  {scramble:'د و س ت', options:['دوست','دست'], answer:'دوست'},
+  {scramble:'ش ا د ی', options:['شادی','شیشه'], answer:'شادی'},
+  {scramble:'ن ا ن', options:['نان','نارنج'], answer:'نان'},
+  {scramble:'پ ا ر', options:['پر','پار'], answer:'پر'},
+  {scramble:'ه و ا', options:['هوا','هدیه'], answer:'هوا'},
+  {scramble:'ل ی و ن', options:['لیوان','لباس'], answer:'لیوان'},
+  {scramble:'م ر غ', options:['مرغ','مرد'], answer:'مرغ'},
+  {scramble:'د ر خ ت', options:['درخت','دریا'], answer:'درخت'},
+  {scramble:'م ا ه', options:['ماه','ماهی'], answer:'ماه'},
+  {scramble:'س ت ا ر ه', options:['ستاره','سنگ'], answer:'ستاره'},
+  {scramble:'ب ا ز ی', options:['بازی','باز'], answer:'بازی'},
+  {scramble:'پ ن ج', options:['پنج','پلو'], answer:'پنج'},
+  {scramble:'ر ا ه', options:['راه','رود'], answer:'راه'},
+  {scramble:'ک و ه', options:['کوه','کوچه'], answer:'کوه'}
+];
+let current = 0, score = 0, answered = false, student = '';
+function startGame(){
+  student = document.getElementById('studentName').value.trim() || 'دانش‌آموز عزیز';
+  document.getElementById('showName').textContent = student;
+  document.getElementById('startCard').classList.add('hidden');
+  document.getElementById('gameCard').classList.remove('hidden');
+  loadQuestion();
+}
+function loadQuestion(){
+  answered = false;
+  document.getElementById('nextBtn').disabled = true;
+  const q = questions[current];
+  document.getElementById('qNum').textContent = current + 1;
+  document.getElementById('score').textContent = score;
+  document.getElementById('scramble').textContent = q.scramble;
+  document.getElementById('feedback').textContent = '';
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  q.options.forEach(opt => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = opt;
+    b.onclick = () => checkAnswer(b, opt);
+    opts.appendChild(b);
+  });
+  document.getElementById('progress').style.width = ((current)/questions.length*100) + '%';
+}
+function checkAnswer(btn, opt){
+  if(answered) return;
+  answered = true;
+  const q = questions[current];
+  const buttons = [...document.querySelectorAll('.opt')];
+  buttons.forEach(b => b.disabled = true);
+  if(opt === q.answer){
+    score++;
+    btn.classList.add('correct');
+    document.getElementById('feedback').textContent = 'آفرین! جواب درست بود! 🌟';
+  } else {
+    btn.classList.add('wrong');
+    buttons.find(b => b.textContent === q.answer)?.classList.add('correct');
+    document.getElementById('feedback').textContent = 'اشکالی ندارد، دوباره با دقت نگاه کن 💖';
+  }
+  document.getElementById('score').textContent = score;
+  document.getElementById('nextBtn').disabled = false;
+}
+function nextQuestion(){
+  if(current < questions.length - 1){
+    current++;
+    loadQuestion();
+  } else {
+    endGame();
+  }
+}
+function endGame(){
+  document.getElementById('gameCard').classList.add('hidden');
+  document.getElementById('resultCard').classList.remove('hidden');
+  const percent = Math.round((score / questions.length) * 100);
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('percent').textContent = percent;
+  let title = 'عالی بودی!';
+  let report = 'تو با دقت و تلاش بازی را انجام دادی.';
+  let cheer = 'هورااا! تو یک ستاره‌ی کلمات هستی! ✨🏆';
+  if(score >= 18){ title = 'فوق‌العاده!'; report = 'کارنامه: بسیار عالی - تسلط خیلی خوب روی کلمات.'; }
+  else if(score >= 14){ title = 'خیلی خوب!'; report = 'کارنامه: خوب - عملکردت عالی بود و کمی تمرین بیشتر هم مفید است.'; }
+  else if(score >= 10){ title = 'آفرین!'; report = 'کارنامه: قابل قبول - با تمرین بیشتر بهتر هم می‌شوی.'; }
+  else { title = 'ادامه بده!'; report = 'کارنامه: نیاز به تمرین بیشتر - تو حتماً می‌توانی بهتر شوی.'; cheer = 'تو می‌توانی! فقط کمی بیشتر تمرین کن و دوباره بدرخش! 🌈'; }
+  document.getElementById('resultTitle').textContent = title + ' ' + student;
+  document.getElementById('report').textContent = report;
+  document.getElementById('cheer').textContent = cheer;
+}
+function restartGame(){ location.reload(); }
 </script>
 </body>
-</html>
+</html>'''
+
+path = Path('/mnt/data/word_game_grade2.html')
+path.write_text(html, encoding='utf-8')
+print(f'sandbox:{path}')
